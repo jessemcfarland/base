@@ -29,6 +29,11 @@ when 'redhat'
     zip
     zsh
   )
+
+  describe yum.repo 'epel'  do
+    it { should exist }
+    it { should be_enabled }
+  end
 end
 
 packages.each do |pkg|
