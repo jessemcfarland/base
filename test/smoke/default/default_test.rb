@@ -7,29 +7,6 @@
 #
 case os[:family]
 when 'redhat'
-  packages = %w(
-    bzip2
-    curl
-    findutils
-    gawk
-    gnupg2
-    gzip
-    iproute
-    lsof
-    net-tools
-    sed
-    tar
-    tcpdump
-    tmux
-    traceroute
-    unzip
-    vim-enhanced
-    wget
-    xz
-    zip
-    zsh
-  )
-
   describe parse_config_file('/etc/yum.conf').params('main') do
     its('gpgcheck') { should eq '1' }
   end
@@ -37,6 +14,15 @@ when 'redhat'
   describe yum.repo 'epel'  do
     it { should exist }
     it { should be_enabled }
+  end
+
+  packages = %w(bzip2 curl findutils gawk gnupg2 gzip iproute lsof net-tools sed
+                tar tcpdump tmux traceroute unzip vim-enhanced wget xz zip zsh)
+end
+
+packages.each do |pkg|
+  describe package pkg do
+    it { should be_installed }
   end
 end
 
@@ -84,10 +70,4 @@ describe sshd_config '/etc/ssh/sshd_config' do
   its('KexAlgorithms') { should eq sshd_config_kex_algorithms }
   its('LogLevel') { should eq 'INFO' }
   its('SyslogFacility') { should eq 'AUTHPRIV' }
-end
-
-packages.each do |pkg|
-  describe package pkg do
-    it { should be_installed }
-  end
 end
