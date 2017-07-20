@@ -30,6 +30,10 @@ when 'redhat'
     zsh
   )
 
+  describe parse_config_file('/etc/yum.conf').params('main') do
+    its('gpgcheck') { should eq '1' }
+  end
+
   describe yum.repo 'epel'  do
     it { should exist }
     it { should be_enabled }

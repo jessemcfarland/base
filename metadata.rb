@@ -10,5 +10,6 @@ issues_url 'https://github.com/jessemcfarland/base/issues'
 source_url 'https://github.com/jessemcfarland/base'
 supports 'centos'
 
-depends 'yum-epel', '~> 2.1.2'
 depends 'openssh', '~> 2.4.1'
+depends 'yum', '~> 5.0.1'
+depends 'yum-epel', '~> 2.1.2'
