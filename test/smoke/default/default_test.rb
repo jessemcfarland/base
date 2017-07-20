@@ -40,6 +40,13 @@ filesystems.each do |fs|
   end
 end
 
+describe directory '/tmp' do
+  it { should be_directory }
+  it { should be_owned_by 'root' }
+  it { should be_grouped_into 'root' }
+  its('mode') { should cmp '1023' }
+end
+
 describe service 'sshd' do
   it { should be_enabled }
   it { should be_installed }

@@ -26,6 +26,14 @@ shared_examples 'base_test' do |platform, metadata|
         mode: '0644'
       )
     end
+
+    it 'creates /tmp directory with correct permissions' do
+      expect(chef_run).to create_directory('/tmp').with(
+        user: 'root',
+        group: 'root',
+        mode: '1777'
+      )
+    end
   end
 end
 

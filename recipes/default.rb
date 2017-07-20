@@ -26,3 +26,11 @@ cookbook_file '/etc/modprobe.d/fs.conf' do
   mode '0644'
   source 'modprobe.d-fs.conf'
 end
+
+# Ensure sticky bit is set on /tmp
+directory '/tmp' do
+  action :create
+  owner 'root'
+  group 'root'
+  mode '1777'
+end
