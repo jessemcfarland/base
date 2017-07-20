@@ -26,6 +26,20 @@ packages.each do |pkg|
   end
 end
 
+describe file '/etc/modprobe.d/fs.conf' do
+  it { should be_file }
+  it { should be_owned_by 'root' }
+  it { should be_grouped_into 'root' }
+  its('mode') { should cmp '0644' }
+end
+
+filesystems = %w(cramfs freevxfs jffs2 hfs hfsplus squashfs udf vfat)
+filesystems.each do |fs|
+  describe file '/etc/modprobe.d/fs.conf' do
+    its('content') { should include "install #{fs} /bin/true" }
+  end
+end
+
 describe service 'sshd' do
   it { should be_enabled }
   it { should be_installed }

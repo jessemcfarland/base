@@ -17,3 +17,12 @@ when 'rhel'
 end
 
 package packages
+
+# Disable unused filesystems
+cookbook_file '/etc/modprobe.d/fs.conf' do
+  action :create
+  owner 'root'
+  group 'root'
+  mode '0644'
+  source 'modprobe.d-fs.conf'
+end

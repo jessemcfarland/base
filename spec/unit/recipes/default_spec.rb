@@ -18,6 +18,14 @@ shared_examples 'base_test' do |platform, metadata|
     it 'installs packages' do
       expect(chef_run).to install_package metadata['packages']
     end
+
+    it 'creates /etc/modprobe.d/fs.conf with the correct permissions' do
+      expect(chef_run).to create_cookbook_file('/etc/modprobe.d/fs.conf').with(
+        user: 'root',
+        group: 'root',
+        mode: '0644'
+      )
+    end
   end
 end
 
