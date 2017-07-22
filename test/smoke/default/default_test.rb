@@ -71,7 +71,11 @@ describe limits_conf '/etc/security/limits.conf' do
 end
 
 describe kernel_parameter 'fs.suid_dumpable' do
-  its('value') { should eq 0 }
+  its('value') { should cmp 0 }
+end
+
+describe kernel_parameter 'kernel.randomize_va_space' do
+  its('value') { should cmp 2 }
 end
 
 describe service 'sshd' do

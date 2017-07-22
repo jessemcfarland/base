@@ -71,3 +71,8 @@ end
 sysctl_param 'fs.suid_dumpable' do
   value 0
 end
+
+# Enable ASLR
+sysctl_param 'kernel.randomize_va_space' do
+  value 2
+end
