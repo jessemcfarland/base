@@ -3,6 +3,7 @@
 # Recipe:: default
 #
 include_recipe 'openssh::default'
+include_recipe 'sysctl::default'
 
 case node['platform_family']
 when 'rhel'
@@ -56,4 +57,17 @@ file grub_user_config do
   group 'root'
   mode '0600'
   content "GRUB2_PASSWORD=#{grub2_password}"
+end
+
+# Restrict core dumps
+set_limit '*' do
+  type 'hard'
+  item 'core'
+  value 0
+  use_system true
+end
+
+# Prevent setuid programs from dumping core
+sysctl_param 'fs.suid_dumpable' do
+  value 0
 end

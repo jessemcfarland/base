@@ -66,6 +66,14 @@ describe file grub_user_config do
   its('content') { should include 'GRUB2_PASSWORD=' }
 end
 
+describe limits_conf '/etc/security/limits.conf' do
+  its('*') { should include ['hard', 'core', '0'] }
+end
+
+describe kernel_parameter 'fs.suid_dumpable' do
+  its('value') { should eq 0 }
+end
+
 describe service 'sshd' do
   it { should be_enabled }
   it { should be_installed }
