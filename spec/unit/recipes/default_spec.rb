@@ -4,10 +4,15 @@
 #
 require 'spec_helper'
 
+grub2_password = 'fakegrub2password'
+
 shared_examples 'base_test' do |platform, metadata|
   context "when run on #{platform} #{metadata['version']}" do
     let(:chef_run) do
       runner = ChefSpec::ServerRunner.new(platform: platform, version: metadata['version'])
+      runner.create_data_bag('secrets', {
+        'grub2' => {'password_pbkdf2' => grub2_password}
+      })
       runner.converge(described_recipe)
     end
 
@@ -32,6 +37,27 @@ shared_examples 'base_test' do |platform, metadata|
         user: 'root',
         group: 'root',
         mode: '1777'
+      )
+    end
+
+    grub_dir = '/boot/grub2'
+    grub_config = "#{grub_dir}/grub.cfg"
+    grub_user_config = "#{grub_dir}/user.cfg"
+
+    it "sets the correct permissions for #{grub_config}" do
+      expect(chef_run).to create_file(grub_config).with(
+        user: 'root',
+        group: 'root',
+        mode: '0600'
+      )
+    end
+
+    it "creates #{grub_user_config} with the correct permissions and content" do
+      expect(chef_run).to create_file(grub_user_config).with(
+        user: 'root',
+        group: 'root',
+        mode: '0600',
+        content: "GRUB2_PASSWORD=#{grub2_password}"
       )
     end
   end

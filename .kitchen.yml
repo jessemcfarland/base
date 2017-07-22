@@ -14,6 +14,7 @@ platforms:
 
 suites:
   - name: default
+    data_bags_path: test/fixtures/default/data_bags
     run_list:
       - recipe[base::default]
     verifier:

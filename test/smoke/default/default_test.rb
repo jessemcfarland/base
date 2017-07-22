@@ -47,6 +47,25 @@ describe directory '/tmp' do
   its('mode') { should cmp '1023' }
 end
 
+grub_dir = '/boot/grub2'
+grub_config = "#{grub_dir}/grub.cfg"
+grub_user_config = "#{grub_dir}/user.cfg"
+
+describe file grub_config do
+  it { should be_file }
+  it { should be_owned_by 'root' }
+  it { should be_grouped_into 'root' }
+  its('mode') { should cmp '0600' }
+end
+
+describe file grub_user_config do
+  it { should be_file }
+  it { should be_owned_by 'root' }
+  it { should be_grouped_into 'root' }
+  its('mode') { should cmp '0600' }
+  its('content') { should include 'GRUB2_PASSWORD=' }
+end
+
 describe service 'sshd' do
   it { should be_enabled }
   it { should be_installed }
