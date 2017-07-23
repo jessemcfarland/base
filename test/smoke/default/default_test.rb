@@ -107,11 +107,33 @@ describe command 'sestatus' do
   its('stdout') { should match /Current mode:\s+enforcing/ }
 end
 
-unconfined_daemons = "ps -eZ | egrep 'initrc' | "\
-  "egrep -vw 'tr|ps|egrep|bash|awk' | tr ':' ' ' | awk '{ print $NF }'"
-describe command unconfined_daemons do
-  its('stdout') { should eq '' }
-  its('stderr') { should eq '' }
+describe processes /.*/ do
+  its('labels') { should_not match /initrc/ }
+end
+
+banner = <<EOF
+********************************************************************
+*                                                                  *
+* This system is for the use of authorized users only. Usage of    *
+* this system may be monitored and recorded by system personnel.   *
+*                                                                  *
+* Anyone using this system expressly consents to such monitoring   *
+* and is advised that if such monitoring reveals possible          *
+* evidence of criminal activity, system personnel may provide the  *
+* evidence from such monitoring to law enforcement officials.      *
+*                                                                  *
+********************************************************************
+EOF
+banner_files = %w(/etc/motd /etc/issue /etc/issue.net)
+banner_files.each do |file|
+  describe file file do
+    it { should be_file }
+    it { should be_owned_by 'root' }
+    it { should be_grouped_into 'root' }
+    its('mode') { should cmp 0644 }
+    its('content') { should eq banner }
+    its('content') { should_not match /'(\\v|\\r|\\m|\\s)/ }
+  end
 end
 
 describe service 'sshd' do

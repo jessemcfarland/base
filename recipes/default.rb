@@ -87,3 +87,15 @@ end
 selinux_state 'SELinux Enforcing' do
   action :enforcing
 end
+
+# Configure banner
+banner_files = %w(/etc/motd /etc/issue /etc/issue.net)
+banner_files.each do |file|
+  cookbook_file file do
+    action :create
+    owner 'root'
+    group 'root'
+    mode '0644'
+    source 'banner'
+  end
+end

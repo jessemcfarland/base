@@ -64,6 +64,17 @@ shared_examples 'base_test' do |platform, metadata|
         content: "GRUB2_PASSWORD=#{grub2_password}"
       )
     end
+
+    banner_files = %w(/etc/motd /etc/issue /etc/issue.net)
+    banner_files.each do |file|
+      it "creates #{file} with the correct permissions" do
+        expect(chef_run).to create_cookbook_file(file).with(
+          user: 'root',
+          group: 'root',
+          mode: '0644'
+        )
+      end
+    end
   end
 end
 
