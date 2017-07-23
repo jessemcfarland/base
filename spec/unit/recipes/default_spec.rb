@@ -24,6 +24,10 @@ shared_examples 'base_test' do |platform, metadata|
       expect(chef_run).to install_package metadata['packages']
     end
 
+    it 'ensures prelink is not installed' do
+      expect(chef_run).to remove_package('prelink')
+    end
+
     it 'creates /etc/modprobe.d/fs.conf with the correct permissions' do
       expect(chef_run).to create_cookbook_file('/etc/modprobe.d/fs.conf').with(
         user: 'root',

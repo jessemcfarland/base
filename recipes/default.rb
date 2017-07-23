@@ -19,6 +19,10 @@ end
 
 package packages
 
+package 'prelink' do
+  action :remove
+end
+
 # Disable unused filesystems
 cookbook_file '/etc/modprobe.d/fs.conf' do
   action :create

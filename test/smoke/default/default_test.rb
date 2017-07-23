@@ -26,6 +26,10 @@ packages.each do |pkg|
   end
 end
 
+describe package 'prelink' do
+  it { should_not be_installed }
+end
+
 describe file '/etc/modprobe.d/fs.conf' do
   it { should be_file }
   it { should be_owned_by 'root' }
