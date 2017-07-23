@@ -15,11 +15,13 @@ when 'rhel'
 
   packages = %w(bzip2 curl findutils gawk gnupg2 gzip iproute lsof net-tools sed
                 tar tcpdump tmux traceroute unzip vim-enhanced wget xz zip zsh)
+
+  remove_packages = %w(mcstrans prelink setroubleshoot)
 end
 
 package packages
 
-package 'prelink' do
+package remove_packages do
   action :remove
 end
 
@@ -79,4 +81,9 @@ end
 # Enable ASLR
 sysctl_param 'kernel.randomize_va_space' do
   value 2
+end
+
+# Set SELinux to enforcing in targeted mode
+selinux_state 'SELinux Enforcing' do
+  action :enforcing
 end

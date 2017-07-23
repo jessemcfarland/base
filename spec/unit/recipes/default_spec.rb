@@ -24,8 +24,8 @@ shared_examples 'base_test' do |platform, metadata|
       expect(chef_run).to install_package metadata['packages']
     end
 
-    it 'ensures prelink is not installed' do
-      expect(chef_run).to remove_package('prelink')
+    it 'removes packages' do
+      expect(chef_run).to remove_package metadata['remove_packages']
     end
 
     it 'creates /etc/modprobe.d/fs.conf with the correct permissions' do
@@ -73,7 +73,8 @@ describe 'base::default' do
       'version' => '7.3.1611',
       'packages' => %w(bzip2 curl findutils gawk gnupg2 gzip iproute lsof
                        net-tools sed tar tcpdump tmux traceroute unzip
-                       vim-enhanced wget xz zip zsh)
+                       vim-enhanced wget xz zip zsh),
+      'remove_packages' => %w(mcstrans prelink setroubleshoot)
     }
   }
 

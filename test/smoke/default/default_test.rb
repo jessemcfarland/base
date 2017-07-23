@@ -18,6 +18,8 @@ when 'redhat'
 
   packages = %w(bzip2 curl findutils gawk gnupg2 gzip iproute lsof net-tools sed
                 tar tcpdump tmux traceroute unzip vim-enhanced wget xz zip zsh)
+
+  remove_packages = %w(mcstrans prelink setroubleshoot)
 end
 
 packages.each do |pkg|
@@ -26,8 +28,10 @@ packages.each do |pkg|
   end
 end
 
-describe package 'prelink' do
-  it { should_not be_installed }
+remove_packages.each do |pkg|
+  describe package pkg do
+    it { should_not be_installed }
+  end
 end
 
 describe file '/etc/modprobe.d/fs.conf' do
@@ -55,11 +59,18 @@ grub_dir = '/boot/grub2'
 grub_config = "#{grub_dir}/grub.cfg"
 grub_user_config = "#{grub_dir}/user.cfg"
 
+describe parse_config_file '/etc/default/grub' do
+  its('GRUB_CMDLINE_LINUX') { should_not include 'selinux=0' }
+  its('GRUB_CMDLINE_LINUX') { should_not include 'enforcing=0' }
+end
+
 describe file grub_config do
   it { should be_file }
   it { should be_owned_by 'root' }
   it { should be_grouped_into 'root' }
   its('mode') { should cmp '0600' }
+  its('content') { should_not match /^\s*linux.*selinux=0/ }
+  its('content') { should_not match /^\s*linux.*enforcing=0/ }
 end
 
 describe file grub_user_config do
@@ -80,6 +91,27 @@ end
 
 describe kernel_parameter 'kernel.randomize_va_space' do
   its('value') { should cmp 2 }
+end
+
+describe package 'libselinux' do
+  it { should be_installed }
+end
+
+describe parse_config_file '/etc/selinux/config' do
+  its('SELINUX') { should eq 'enforcing' }
+  its('SELINUXTYPE') { should eq 'targeted' }
+end
+
+describe command 'sestatus' do
+  its('stdout') { should match /Loaded policy name:\s+targeted/ }
+  its('stdout') { should match /Current mode:\s+enforcing/ }
+end
+
+unconfined_daemons = "ps -eZ | egrep 'initrc' | "\
+  "egrep -vw 'tr|ps|egrep|bash|awk' | tr ':' ' ' | awk '{ print $NF }'"
+describe command unconfined_daemons do
+  its('stdout') { should eq '' }
+  its('stderr') { should eq '' }
 end
 
 describe service 'sshd' do

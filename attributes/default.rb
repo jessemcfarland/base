@@ -28,3 +28,5 @@ default['openssh']['server'] = {
   'syslog_facility': 'AUTHPRIV'
 }
 default['openssh']['server']['match'] = {}
+
+default['selinux']['selinuxtype'] = 'targeted'
