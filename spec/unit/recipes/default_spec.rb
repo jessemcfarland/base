@@ -28,6 +28,16 @@ shared_examples 'base_test' do |platform, metadata|
       expect(chef_run).to remove_package metadata['remove_packages']
     end
 
+    metadata['disable_services'].each do |svc|
+      it "disables #{svc} service" do
+        expect(chef_run).to disable_service svc
+      end
+
+      it "stops #{svc} service" do
+        expect(chef_run).to stop_service svc
+      end
+    end
+
     it 'creates /etc/modprobe.d/fs.conf with the correct permissions' do
       expect(chef_run).to create_cookbook_file('/etc/modprobe.d/fs.conf').with(
         user: 'root',
@@ -85,7 +95,8 @@ describe 'base::default' do
       'packages' => %w(bzip2 curl findutils gawk gnupg2 gzip iproute lsof
                        net-tools sed tar tcpdump tmux traceroute unzip
                        vim-enhanced wget xz zip zsh),
-      'remove_packages' => %w(mcstrans prelink setroubleshoot)
+      'remove_packages' => %w(mcstrans prelink setroubleshoot),
+      'disable_services' => ['xinetd']
     }
   }
 

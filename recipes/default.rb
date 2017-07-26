@@ -4,6 +4,7 @@
 #
 include_recipe 'openssh::default'
 include_recipe 'sysctl::default'
+include_recipe 'xinetd::builtin_services'
 
 case node['platform_family']
 when 'rhel'
@@ -17,12 +18,20 @@ when 'rhel'
                 tar tcpdump tmux traceroute unzip vim-enhanced wget xz zip zsh)
 
   remove_packages = %w(mcstrans prelink setroubleshoot)
+
+  disable_services = ['xinetd']
 end
 
 package packages
 
 package remove_packages do
   action :remove
+end
+
+disable_services.each do |svc|
+  service svc do
+    action [:disable, :stop]
+  end
 end
 
 # Disable unused filesystems

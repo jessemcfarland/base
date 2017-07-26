@@ -30,3 +30,15 @@ default['openssh']['server'] = {
 default['openssh']['server']['match'] = {}
 
 default['selinux']['selinuxtype'] = 'targeted'
+
+default['xinetd']['builtin_services']['chargen-stream']['enabled'] = false
+default['xinetd']['builtin_services']['chargen-dgram']['enabled'] = false
+default['xinetd']['builtin_services']['daytime-stream']['enabled'] = false
+default['xinetd']['builtin_services']['daytime-dgram']['enabled'] = false
+default['xinetd']['builtin_services']['discard-stream']['enabled'] = false
+default['xinetd']['builtin_services']['discard-dgram']['enabled'] = false
+default['xinetd']['builtin_services']['echo-stream']['enabled'] = false
+default['xinetd']['builtin_services']['echo-dgram']['enabled'] = false
+default['xinetd']['builtin_services']['time-stream']['enabled'] = false
+default['xinetd']['builtin_services']['time-dgram']['enabled'] = false
+default['xinetd']['builtin_services']['tcpmux-server']['enabled'] = false

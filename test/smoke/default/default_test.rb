@@ -20,6 +20,7 @@ when 'redhat'
                 tar tcpdump tmux traceroute unzip vim-enhanced wget xz zip zsh)
 
   remove_packages = %w(mcstrans prelink setroubleshoot)
+  disable_services = ['xinetd']
 end
 
 packages.each do |pkg|
@@ -31,6 +32,13 @@ end
 remove_packages.each do |pkg|
   describe package pkg do
     it { should_not be_installed }
+  end
+end
+
+disable_services.each do |svc|
+  describe service svc do
+    it { should_not be_enabled }
+    it { should_not be_running }
   end
 end
 
@@ -134,6 +142,21 @@ banner_files.each do |file|
     its('content') { should eq banner }
     its('content') { should_not match /'(\\v|\\r|\\m|\\s)/ }
   end
+end
+
+builtin_xinetd_services = %w(chargen daytime discard echo time)
+builtin_xinetd_services.each do |svc|
+  describe xinetd_conf "#{svc}-dgram" do
+    it { should be_disabled }
+  end
+
+  describe xinetd_conf "#{svc}-stream" do
+    it { should be_disabled }
+  end
+end
+
+describe xinetd_conf 'tcpmux-server' do
+  it { should be_disabled }
 end
 
 describe service 'sshd' do
