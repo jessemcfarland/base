@@ -5,6 +5,7 @@
 include_recipe 'openssh::default'
 include_recipe 'sysctl::default'
 include_recipe 'xinetd::builtin_services'
+include_recipe 'ntp::default'
 
 case node['platform_family']
 when 'rhel'

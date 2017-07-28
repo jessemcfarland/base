@@ -11,6 +11,7 @@ source_url 'https://github.com/jessemcfarland/base'
 supports 'centos'
 
 depends 'limits', '~> 1.0.0'
+depends 'ntp', '~> 3.5.1'
 depends 'openssh', '~> 2.4.1'
 depends 'selinux', '~> 2.0.3'
 depends 'sysctl', '~> 0.9.0'

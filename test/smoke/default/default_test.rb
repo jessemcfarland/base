@@ -159,6 +159,28 @@ describe xinetd_conf 'tcpmux-server' do
   it { should be_disabled }
 end
 
+describe package 'ntp' do
+  it { should be_installed }
+end
+
+ntp_conf_restrict_options = 'default kod notrap nomodify nopeer noquery'
+
+describe ntp_conf '/etc/ntp.conf' do
+  its('server') { should_not eq nil }
+  its('restrict') { should include ntp_conf_restrict_options }
+end
+
+describe.one do
+  describe parse_config_file '/etc/sysconfig/ntpd' do
+    its('OPTIONS') { should include '-u ntp:ntp' }
+  end
+
+  ntp_service = '/usr/lib/systemd/system/ntpd.service'
+  describe parse_config_file(ntp_service).params('Service') do
+    its('ExecStart') { should include '-u ntp:ntp' }
+  end
+end
+
 describe service 'sshd' do
   it { should be_enabled }
   it { should be_installed }
