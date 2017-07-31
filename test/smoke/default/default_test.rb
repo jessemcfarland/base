@@ -20,7 +20,10 @@ when 'redhat'
                 tar tcpdump tmux traceroute unzip vim-enhanced wget xz zip zsh)
 
   remove_packages = %w(mcstrans prelink setroubleshoot)
-  disable_services = ['xinetd']
+  disable_services = %w(avahi-daemon cups dhcp dovecot httpd named ntalk
+                        rexec.socket rlogin.socket rsh.socket rsyncd slapd smb
+                        snmpd squid telnet.socket tftp.socket vsftpd xinetd
+                        ypserv)
 end
 
 packages.each do |pkg|
@@ -40,6 +43,17 @@ disable_services.each do |svc|
     it { should_not be_enabled }
     it { should_not be_running }
   end
+end
+
+describe parse_config_file '/etc/postfix/main.cf' do
+  its('inet_interfaces') { should match /loopback-only|localhost/ }
+end
+
+describe port 25 do
+  it { should be_listening }
+  its('addresses') { should cmp ['127.0.0.1', '::1'] }
+  its('processes') { should cmp 'master' }
+  its('protocols') { should cmp ['tcp', 'tcp6'] }
 end
 
 describe file '/etc/modprobe.d/fs.conf' do

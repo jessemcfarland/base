@@ -20,7 +20,10 @@ when 'rhel'
 
   remove_packages = %w(mcstrans prelink setroubleshoot)
 
-  disable_services = ['xinetd']
+  disable_services = %w(avahi-daemon cups dhcp dovecot httpd named ntalk
+                        rexec.socket rlogin.socket rsh.socket rsyncd slapd smb
+                        snmpd squid telnet.socket tftp.socket vsftpd xinetd
+                        ypserv)
 end
 
 package packages
@@ -34,6 +37,8 @@ disable_services.each do |svc|
     action [:disable, :stop]
   end
 end
+
+include_recipe 'postfix::default'
 
 # Disable unused filesystems
 cookbook_file '/etc/modprobe.d/fs.conf' do

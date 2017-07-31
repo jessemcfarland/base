@@ -45,3 +45,5 @@ default['xinetd']['builtin_services']['tcpmux-server']['enabled'] = false
 
 default['ntp']['servers'] = %w(0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org
                                3.pool.ntp.org)
+
+default['postfix']['main']['inet_interfaces'] = 'loopback-only'

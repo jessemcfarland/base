@@ -96,7 +96,10 @@ describe 'base::default' do
                        net-tools sed tar tcpdump tmux traceroute unzip
                        vim-enhanced wget xz zip zsh),
       'remove_packages' => %w(mcstrans prelink setroubleshoot),
-      'disable_services' => ['xinetd']
+      'disable_services' => %w(avahi-daemon cups dhcp dovecot httpd named ntalk
+                               rexec.socket rlogin.socket rsh.socket rsyncd
+                               slapd smb snmpd squid telnet.socket tftp.socket
+                               vsftpd xinetd ypserv)
     }
   }
 
