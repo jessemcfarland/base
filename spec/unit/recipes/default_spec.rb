@@ -20,6 +20,34 @@ shared_examples 'base_test' do |platform, metadata|
       expect { chef_run }.to_not raise_error
     end
 
+    it 'includes recipe ntp::default' do
+      expect(chef_run).to include_recipe('ntp::default')
+    end
+
+    it 'includes recipe openssh::default' do
+      expect(chef_run).to include_recipe('openssh::default')
+    end
+
+    before do
+      stub_command('/usr/bin/test /etc/alternatives/mta -ef /usr/sbin/sendmail.postfix').and_return(true)
+    end
+
+    it 'includes recipe postfix::default' do
+      expect(chef_run).to include_recipe('postfix::default')
+    end
+
+    it 'includes recipe sysctl::default' do
+      expect(chef_run).to include_recipe('sysctl::default')
+    end
+
+    it 'includes recipe xinetd::builtin_services' do
+      expect(chef_run).to include_recipe('xinetd::builtin_services')
+    end
+
+    it 'includes recipe yum-epel::default' do
+      expect(chef_run).to include_recipe('yum-epel::default')
+    end
+
     it 'installs packages' do
       expect(chef_run).to install_package metadata['packages']
     end

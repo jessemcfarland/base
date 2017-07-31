@@ -2,10 +2,9 @@
 # Cookbook:: base
 # Recipe:: default
 #
-include_recipe 'openssh::default'
-include_recipe 'sysctl::default'
-include_recipe 'xinetd::builtin_services'
 include_recipe 'ntp::default'
+include_recipe 'openssh::default'
+include_recipe 'xinetd::builtin_services'
 
 case node['platform_family']
 when 'rhel'
@@ -87,6 +86,8 @@ set_limit '*' do
   value 0
   use_system true
 end
+
+include_recipe 'sysctl::default'
 
 # Prevent setuid programs from dumping core
 sysctl_param 'fs.suid_dumpable' do
