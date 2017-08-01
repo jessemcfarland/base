@@ -17,7 +17,8 @@ when 'rhel'
   packages = %w(bzip2 curl findutils gawk gnupg2 gzip iproute lsof net-tools sed
                 tar tcpdump tmux traceroute unzip vim-enhanced wget xz zip zsh)
 
-  remove_packages = %w(mcstrans prelink setroubleshoot)
+  remove_packages = %w(mcstrans openldap-clients prelink rsh setroubleshoot talk
+                       telnet)
 
   disable_services = %w(avahi-daemon cups dhcp dovecot httpd named ntalk
                         rexec.socket rlogin.socket rsh.socket rsyncd slapd smb
