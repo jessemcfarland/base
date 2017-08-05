@@ -86,6 +86,7 @@ grub_user_config = "#{grub_dir}/user.cfg"
 describe parse_config_file '/etc/default/grub' do
   its('GRUB_CMDLINE_LINUX') { should_not include 'selinux=0' }
   its('GRUB_CMDLINE_LINUX') { should_not include 'enforcing=0' }
+  its('GRUB_CMDLINE_LINUX') { should include 'ipv6.disable=1' }
 end
 
 describe file grub_config do
@@ -115,6 +116,65 @@ end
 
 describe kernel_parameter 'kernel.randomize_va_space' do
   its('value') { should cmp 2 }
+end
+
+describe kernel_parameter 'net.ipv4.ip_forward' do
+  its('value') { should cmp 0 }
+end
+
+describe kernel_parameter 'net.ipv4.icmp_echo_ignore_broadcasts' do
+  its('value') { should cmp 1 }
+end
+
+describe kernel_parameter 'net.ipv4.icmp_ignore_bogus_error_responses' do
+  its('value') { should cmp 1 }
+end
+
+describe kernel_parameter 'net.ipv4.tcp_syncookies' do
+  its('value') { should cmp 1 }
+end
+
+net_ipv4_conf_params = {
+  'send_redirects' => 0,
+  'accept_source_route' => 0,
+  'accept_redirects' => 0,
+  'secure_redirects' => 0,
+  'log_martians' => 1,
+  'rp_filter' => 1
+}
+
+net_ipv4_conf_params.each do |param, value|
+  describe kernel_parameter "net.ipv4.conf.all.#{param}" do
+    its('value') { should cmp value }
+  end
+
+  describe kernel_parameter "net.ipv4.conf.default.#{param}" do
+    its('value') { should cmp value }
+  end
+end
+
+net_ipv6_conf_params = {
+  'accept_ra' => 0,
+  'accept_redirects' => 0,
+  'disable_ipv6' => 1
+}
+
+net_ipv6_conf_params.each do |param, value|
+  describe kernel_parameter "net.ipv6.conf.all.#{param}" do
+    its('value') { should cmp value }
+  end
+
+  describe kernel_parameter "net.ipv6.conf.default.#{param}" do
+    its('value') { should cmp value }
+  end
+end
+
+describe file '/etc/modprobe.d/ipv6.conf' do
+  it { should be_file }
+  it { should be_owned_by 'root' }
+  it { should be_grouped_into 'root' }
+  its('mode') { should cmp '0644' }
+  its('content') { should include 'options ipv6 disable=1' }
 end
 
 describe package 'libselinux' do

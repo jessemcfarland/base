@@ -113,6 +113,18 @@ shared_examples 'base_test' do |platform, metadata|
         )
       end
     end
+
+    it 'creates /etc/modprobe.d/ipv6.conf with the correct permissions and content' do
+      expect(chef_run).to create_cookbook_file('/etc/modprobe.d/ipv6.conf').with(
+        user: 'root',
+        group: 'root',
+        mode: '0644'
+      )
+    end
+
+    it 'disables ipv6 on the kernel boot command' do
+      expect(chef_run).to run_ruby_block('disable ipv6 on kernel boot command')
+    end
   end
 end
 
